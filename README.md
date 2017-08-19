@@ -13,8 +13,6 @@ My silly stuff
 
   Sim a baset game
 
-* * *
-
 ## Future
 - Poem
 
