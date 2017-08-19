@@ -1,16 +1,25 @@
 # Console1
 My silly stuff
 
-### Finished or undercoding
+## Finished or undercoding
+
 - Crawl For Baidu Tieba
+
   Find the times of users to post
+  
   Find the times of users to remark (uncomplete)
+
 - SimBasketGame
+
   Sim a baset game
 
-### Future
+* * *
+
+## Future
 - Poem
+
   auto generate a poem:>
-- Sim city transport
-  +;-
   
+- Sim city transport
+
+  +;-
