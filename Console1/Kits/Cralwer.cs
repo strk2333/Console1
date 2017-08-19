@@ -19,6 +19,7 @@ namespace Kits
         private static List<string[]> nameDatabase2;
         private List<TieBaUser> users;
         private int passCount = 0;
+        private string finalPage;
         //private List<string> files;
 
         public Cralwer(string root)
@@ -38,7 +39,8 @@ namespace Kits
 
         public void Start()
         {
-            HandlePagesPostCrawl(100);
+            finalPage = CrawlFinalPage(_root);
+            HandlePagesPostCrawl();
 
             //foreach (string s in CrawlRemarkData(@"https://tieba.baidu.com/p/5279372068"))
             //{
@@ -83,10 +85,7 @@ namespace Kits
         int threadCount;
         public void HandlePagesPostCrawl(int count)
         {
-            int num = count;
             threadCount = count > 10 ? 10 : count;
-            Thread[] threads = new Thread[threadCount];
-            object sync = new object();
 
             for (int i = 0; i < count; i++)
             {
@@ -95,34 +94,28 @@ namespace Kits
 
             for (int i = 0; i < threadCount; i++)
             {
-                string tmp;
                 int j = i;
-                threads[i] = CreateCrawlThread(j);
-                //threads[i] = new Thread(() =>
-                //{
-                //    while (urls.Count != 0)
-                //    {
-                //        tmp = urls.Pop();
-                //        nameDatabase1.Add(CrawlPosterData(tmp));
-                //        Console.WriteLine(++passCount + "pass");
-                //    }
-                //    //lock (sync)
-                //    {
-                //        Console.WriteLine(j + "Done");
+                CreateCrawlThread(j).Start();
+            }
+        }
 
-                //        if (--threadCount == 0)
-                //        {
-                //            Console.WriteLine("All Done");
+        public void HandlePagesPostCrawl()
+        {
+            if (finalPage == null)
+                throw new Exception("Can't find final page!");
+            int count = int.Parse(finalPage) / 50;
+            threadCount = count > 10 ? 10 : count;
 
-                //            DataHandles();
-                //            Console.WriteLine("UserData Done");
-                //        }
-                //    }
-                //});
+            for (int i = 0; i < count; i++)
+            {
+                urlStack.Push(_root + "&pn=" + i * 50);
             }
 
-            foreach (Thread t in threads)
-                t.Start();
+            for (int i = 0; i < threadCount; i++)
+            {
+                int j = i;
+                CreateCrawlThread(j).Start();
+            }
         }
 
         private Thread CreateCrawlThread(int index)
@@ -130,25 +123,28 @@ namespace Kits
             string tmp;
             return new Thread(() =>
             {
-                while (urlStack.Count != 0)
+                while (true)
                 {
-                    tmp = urlStack.Pop();
+                    lock (urlStack)
+                    {
+                        if (urlStack.Count != 0)
+                            tmp = urlStack.Pop();
+                        else
+                            break;
+                    }
                     nameDatabase1.Add(CrawlPosterData(tmp));
                     Console.WriteLine(++passCount + "pass");
                 }
-                //lock (sync)
+
+                Console.WriteLine(index + "Done");
+
+                if (--threadCount == 0)
                 {
-                    Console.WriteLine(index + "Done");
-
-                    if (--threadCount == 0)
-                    {
-                        Console.WriteLine("All Done");
-
-                        DataHandles();
-                        Console.WriteLine("UserData Done");
-                    }
+                    Console.WriteLine("All Done");
+                    DataHandles();
+                    Console.WriteLine("UserData Done");
                 }
-            }); 
+            });
         }
 
         public void HandlePagesRemarkCrawl()
@@ -212,7 +208,6 @@ namespace Kits
             if (tmpCookie == null)
             {
                 req.CookieContainer = new CookieContainer();
-                tmpCookie = req.CookieContainer;
             }
             else
             {
@@ -232,14 +227,18 @@ namespace Kits
                 {
                     Console.WriteLine("HTTP Status: 403");
                     Console.WriteLine("URL:" + url);
-                    urlStack.Push(url);
-                    Thread.Sleep(1000);
+                    lock (urlStack)
+                    {
+                        urlStack.Push(url);
+                    }
+                    Thread.Sleep(500);
                     Console.WriteLine("Try again");
                     CreateCrawlThread(0).Start();
                     Thread.CurrentThread.Abort();
                 }
             }
-            //tmpCookie.Add(res.Cookies);
+
+            tmpCookie = req.CookieContainer;
 
             tmp = GetContent(res.GetResponseStream());
             tmp2 = Analyst(tmp, @"<li class="" j_thread_list[\s\S]+?</li>");
@@ -274,10 +273,31 @@ namespace Kits
             return tmp3;
         }
 
+        private string CrawlFinalPage(string url)
+        {
+            // <a href="//tieba.baidu.com/f?kw=switch&amp;ie=utf-8&amp;pn=31050" class="last pagination-item ">尾页</a>
+            HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
+            req.Method = "GET";
+            string tmp = GetContent(req.GetResponse().GetResponseStream());
+            string[] tmp2 = Analyst(tmp, @"下一页[\s\S]+?class=""last pagination-item");
+
+            return GetFinalPage(tmp2[0]);
+        }
+
         private void GetPostUrls(string[] target)
         {
             foreach (string s in target)
                 GetPostUrls(s);
+        }
+
+        private string GetFinalPage(string target)
+        {
+            string tmp;
+            tmp = Regex.Match(target, @"pn=[\s\S]+?""").Value;
+            tmp = tmp.Remove(0, @"pn=".Length);
+            tmp = tmp.Remove(tmp.Length - 1, 1);
+
+            return tmp;
         }
 
         private static string[] GetRemarker(string[] target)
