@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LifeGame.WordGame;
+using Console1.WordGame;
 
-namespace LifeGame
+namespace Console1
 {
     class Program
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using LifeGame.WordGame.Creature;
-using LifeGame.WordGame.BasketGame;
-namespace LifeGame.WordGame
+using Console1.WordGame.Creature;
+using Console1.WordGame.BasketGame;
+namespace Console1.WordGame
 {
     public sealed class WordGameController
     {

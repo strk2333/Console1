@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LifeGame.SimCity.Fund
+namespace Console1.SimCity.Fund
 {
     class CityMap
     {

@@ -51,7 +51,6 @@
     <Compile Include="SimCity\Fund\Position.cs" />
     <Compile Include="Lib\V2.cs" />
     <Compile Include="Poem\Poem.cs" />
-    <Compile Include="Test.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SimCity\BasketGame%28obsolete%29\BasketController.cs" />

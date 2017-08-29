@@ -1,8 +1,8 @@
 ﻿using System;
-using LifeGame.WordGame.Creature;
+using Console1.WordGame.Creature;
 using Basket;
 
-namespace LifeGame.WordGame.BasketGame
+namespace Console1.WordGame.BasketGame
 {
 
     public class BasketMotion

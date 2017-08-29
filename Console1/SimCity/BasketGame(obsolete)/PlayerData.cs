@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LifeGame.WordGame.BasketGame
+namespace Console1.WordGame.BasketGame
 {
     public class PlayerData
     {

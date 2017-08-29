@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace LifeGame.WordGame.BasketGame
+namespace Console1.WordGame.BasketGame
 {
     public class BasketTalent
     {

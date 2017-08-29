@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using LifeGame.WordGame.Creature;
+using Console1.WordGame.Creature;
 using Basket;
 using System.Collections.Generic;
 
-namespace LifeGame.WordGame.BasketGame
+namespace Console1.WordGame.BasketGame
 {
     public class BasketTeam
     {

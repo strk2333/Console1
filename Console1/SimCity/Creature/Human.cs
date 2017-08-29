@@ -1,7 +1,7 @@
 ﻿using System;
-using LifeGame.WordGame.BasketGame;
+using Console1.WordGame.BasketGame;
 
-namespace LifeGame.WordGame.Creature
+namespace Console1.WordGame.Creature
 {
     public class Human : Animal, IComparable
     {

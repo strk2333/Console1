@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Lib;
 
-namespace LifeGame.SimCity.Fund
+namespace Console1.SimCity.Fund
 {
     class Position
     {

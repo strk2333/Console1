@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using LifeGame.WordGame.Creature;
+using Console1.WordGame.Creature;
 using System.Threading.Tasks;
 using Basket;
 
-namespace LifeGame.WordGame.BasketGame
+namespace Console1.WordGame.BasketGame
 {
     class BasketController
     {

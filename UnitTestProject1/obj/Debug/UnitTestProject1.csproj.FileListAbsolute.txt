@@ -1,0 +1,15 @@
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.abstractions.dll
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.runner.visualstudio.testadapter.dll
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.runner.utility.desktop.dll
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.execution.desktop.dll
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\UnitTestProject1.dll
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\UnitTestProject1.pdb
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.assert.dll
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.core.dll
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.assert.pdb
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.assert.xml
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.core.pdb
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\bin\Debug\xunit.core.xml
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\obj\Debug\UnitTestProject1.csprojResolveAssemblyReference.cache
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\obj\Debug\UnitTestProject1.dll
+C:\Users\1\Documents\Visual Studio 2015\Projects\Console1\UnitTestProject1\obj\Debug\UnitTestProject1.pdb
