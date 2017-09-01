@@ -66,12 +66,14 @@
     <Compile Include="SimCity\Creature\Talents.cs" />
     <Compile Include="SimCity\BasketGame%28obsolete%29\Data\Enums.cs" />
     <Compile Include="SimCity\BasketGame%28obsolete%29\Data\StaticData.cs" />
-    <Compile Include="SimCity\WordGameController.cs" />
+    <Compile Include="SimCity\Starter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

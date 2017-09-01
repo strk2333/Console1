@@ -2,13 +2,20 @@
 using System.Collections.Generic;
 using Lib;
 
-namespace Console1.SimCity.Fund
+namespace SimCity.Fund
 {
     class Position
     {
         private string _name;
         private V2<int, int> _point;
         private List<Position> _neighbors;
+
+        public Position()
+        {
+            _name = "Spot";
+            _point = new V2<int, int>();
+            _neighbors = new List<Position>();
+        }
 
         public Position(string name, V2<int, int> point, List<Position> neighbors)
         {

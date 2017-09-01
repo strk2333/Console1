@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using Console1.WordGame.Creature;
 using Console1.WordGame.BasketGame;
-namespace Console1.WordGame
+using SimCity.Fund;
+
+namespace SimCity
 {
-    public sealed class WordGameController
+    public sealed class Starter
     {
         private BasketController basketGame;
         private BasketTeam team1;
@@ -11,7 +13,7 @@ namespace Console1.WordGame
 
         public void Init()
         {
-
+            CityMap cityMap = CityMap.GetInstance();
         }
 
         public void StartGame()
@@ -22,7 +24,7 @@ namespace Console1.WordGame
         #region obsoleted
         private void StartBasketGame()
         {
-            basketGame = new BasketGame.BasketController();
+            basketGame = new BasketController();
 
             Human[] mem1 = new Human[5];
             Human[] mem2 = new Human[5];

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console1.SimCity.Fund
+namespace SimCity.Fund
 {
     class Data
     {

@@ -14,8 +14,13 @@ namespace Console1
             //MyClass mc = new MyClass();
             //WordGameController game = new WordGameController();
             //game.StartGame();
-            Kits.Cralwer c = new Kits.Cralwer();
-            c.Start();
+
+            //Kits.Cralwer c = new Kits.Cralwer();
+            //c.Start();
+
+            SimCity.Starter starter = new SimCity.Starter();
+            starter.StartGame();
+
             Console.Read();
         }
     }
