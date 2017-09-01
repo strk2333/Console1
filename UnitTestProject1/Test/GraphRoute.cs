@@ -14,8 +14,8 @@ public class GraphRoute
     [Fact]
     public void RouteTest()
     {
-        //FindRoute(0, 6);
-        FindAllNodes();
+        FindRoute(3, 5);
+        //FindAllNodes();
     }
 
     private void InitNodes()
@@ -86,14 +86,18 @@ public class GraphRoute
 
         foreach (GraphNode node in s.neighbors)
         {
+            visited.Add(s);
             route.Add(s);
 
             if (visited.Contains(node))
                 continue;
             visited.Add(node);
+            route.Add(node);
+
             if (Dfs(node, t, visited, route))
                 break;
             route.Clear();
+            visited.Clear();
         }
 
         foreach (GraphNode node in route)
@@ -107,8 +111,6 @@ public class GraphRoute
     {
         if (s.value == t.value)
             return true;
-
-        route.Add(s);
 
         foreach (GraphNode node in s.neighbors)
         {
