@@ -40,23 +40,31 @@ namespace SimCity.Fund
             foreach (Position p in pos)
             {
                 points.Add(p.GetPoint());
-                Debug.Write(p.GetPoint());
             }
-            for (int i = -(int)_floorArea.x; i < _floorArea.x; i++)
+            for (int y = (int)_floorArea.y; y > -_floorArea.y; y--)
             {
-                for (int j = -(int)_floorArea.y; j < _floorArea.y; j++)
+                for (int x = -(int)_floorArea.x; x < _floorArea.x; x++)
                 {
-                    if (points.Find(item => item.x == i && item.y == j) != null)
+                    if (points.Find(item => item.x == y && item.y == x) != null)
                     {
-                        Console.Write("C ");
+                        if (y == 0 && y == x)
+                        {
+                            Console.Write("θ");
+                        }
+                        else
+                            Console.Write("C ");
                     }
                     else
                     {
-                        Console.Write(". ");
+                        if (y == 0 && y == x)
+                        {
+                            Console.Write("O");
+                        }
+                        else
+                            Console.Write(". ");
                     }
                 }
                 Console.WriteLine();
-                Debug.WriteLine("");
             }
         }
     }
@@ -96,7 +104,7 @@ namespace SimCity.Fund
             InitPos(size);
             List<Position> list = new List<Position>(_pos);
             TransMap transMap = new TransMap();
-            int factor, factorx, factory;
+            float factor, factorx, factory;
             switch (type)
             {
                 case 1:
@@ -104,10 +112,11 @@ namespace SimCity.Fund
                     {
                         do
                         {
-                            factor = random.Next(0, 100);
-                            factorx = random.Next(-1000, 1000);
-                            factory = random.Next(-1000, 1000);
-                            SetPoint(pos, factor, factorx, factory, refPoint, area / 2);
+                            factor = random.Next(0, 100) / (float)100;
+                            factorx = random.Next(-1000, 1000) / (float)1000;
+                            factory = random.Next(-1000, 1000) / (float)1000;
+                            SetPointByRadius(pos, factor, factorx, factory, refPoint, area / 2);
+                            Debug.WriteLine("-" + pos.GetPoint());
                         } while (ListCheck(list, pos));
                     }
                     break;
@@ -125,88 +134,58 @@ namespace SimCity.Fund
             return transMap;
         }
 
-        private void SetPoint(Position pos, int factor, int factorx, int factory, V2<int, int> refPoint, V2<float, float> area)
+        private void SetPointByRadius(Position pos, float factor, float factorx, float factory, V2<int, int> refPoint, V2<float, float> area)
         {
-            if (factor < 40)
+            int x0, y0;
+
+            if (factor < 0.1f)
             {
                 // center area
-                pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factorx * 0.001f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f)));
+                GetRandomPoint(0.0f, 0.2f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
             }
-            else if (factor < 60)
+            else if (factor < 0.3f)
             {
-                if (factorx >= 0 && factory >= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factorx * 0.001f + area.x * 0.2f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f + area.y * 0.2f)));
-                else if (factorx >= 0 && factory <= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f + area.x * 0.2f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f - area.y * 0.2f)));
-                else if (factorx <= 0 && factory >= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f - area.x * 0.2f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f + area.y * 0.2f)));
-                else if (factorx <= 0 && factory <= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f - area.x * 0.2f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f - area.y * 0.2f)));
+                GetRandomPoint(0.2f, 0.4f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
             }
-            else if (factor < 70)
+            else if (factor < 0.6f)
             {
-                if (factorx >= 0 && factory >= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factorx * 0.001f + area.x * 0.4f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f + area.y * 0.4f)));
-                else if (factorx >= 0 && factory <= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f + area.x * 0.4f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f - area.y * 0.4f)));
-                else if (factorx <= 0 && factory >= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f - area.x * 0.4f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f + area.y * 0.4f)));
-                else if (factorx <= 0 && factory <= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f - area.x * 0.4f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f - area.y * 0.4f)));
+                GetRandomPoint(0.4f, 0.6f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
             }
-            else if (factor < 80)
+            else if (factor < 0.8f)
             {
-                if (factorx >= 0 && factory >= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factorx * 0.001f + area.x * 0.6f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f + area.y * 0.6f)));
-                else if (factorx >= 0 && factory <= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f + area.x * 0.6f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f - area.y * 0.6f)));
-                else if (factorx <= 0 && factory >= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f - area.x * 0.6f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f + area.y * 0.6f)));
-                else if (factorx <= 0 && factory <= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f - area.x * 0.6f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f - area.y * 0.6f)));
+                GetRandomPoint(0.6f, 0.8f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
             }
             else
             {
                 // edge area
-                if (factorx >= 0 && factory >= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factorx * 0.001f + area.x * 0.8f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f + area.y * 0.8f)));
-                else if (factorx >= 0 && factory <= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f + area.x * 0.8f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f - area.y * 0.8f)));
-                else if (factorx <= 0 && factory >= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f - area.x * 0.8f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f + area.y * 0.8f)));
-                else if (factorx <= 0 && factory <= 0)
-                    pos.SetPoint(new V2<int, int>((int)(refPoint.x + area.x * 0.2f * factory * 0.001f - area.x * 0.8f), (int)(refPoint.y + area.y * 0.2f * factory * 0.001f - area.y * 0.8f)));
+                GetRandomPoint(0.8f, 1f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
             }
+            if (factorx >= 0 && factory >= 0)
+                pos.SetPoint(new V2<int, int>(refPoint.x + x0, refPoint.y + y0));
+            else if (factorx >= 0 && factory <= 0)
+                pos.SetPoint(new V2<int, int>(refPoint.x + x0, refPoint.y - y0));
+            else if (factorx <= 0 && factory >= 0)
+                pos.SetPoint(new V2<int, int>(refPoint.x - x0, refPoint.y + y0));
+            else if (factorx <= 0 && factory <= 0)
+                pos.SetPoint(new V2<int, int>(refPoint.x - x0, refPoint.y - y0));
+
+            //pos.SetPoint(new V2<int, int>(refPoint.x + x0, refPoint.y + y0));
+
         }
 
-        private void SetPointByRadius(int r1, int r2, Position pos, int factor, int factorx, int factory, V2<int, int> refPoint, V2<float, float> area)
+
+
+        private void GetRandomPoint(float factorr1, float factorr2, float factorx, float factory, V2<float, float> area, out int x0, out int y0)
         {
-            int x0 = (int)(factorx * 0.001) * r2 + r1;
-            int y0 = (int)(factory * 0.001) * r2 + r1;
-            double c = 2 * Math.PI * (float)r1;
+            float r1 = area.x > area.y ? area.x * factorr1 : area.y * factorr1;
+            float r2 = area.x > area.y ? area.x * factorr2 : area.y * factorr2;
+            x0 = (int)(factorx * r2);
             // y^2 == r1^2 - x^2
-            int y1 = (int)Math.Sqrt(r1 * r1 - x0 * x0);
+            int y1 = r1 * r1 <= x0 * x0 ? 0 : (int)Math.Sqrt(r1 * r1 - x0 * x0);
             int y2 = (int)Math.Sqrt(r2 * r2 - x0 * x0);
-            y0 = y1 + (y2 - y1) * factory;
-            if (factor < 40)
-            {
-                // center area
-
-            }
-            else if (factor < 60)
-            {
-
-            }
-            else if (factor < 70)
-            {
-            }
-            else if (factor < 80)
-            {
-            }
-            else
-            {
-                // edge area
-            }
+            y0 = (int)(y1 + (y2 - y1) * factory);
+            Debug.WriteLine(r1 + "," + r2);
+            Debug.WriteLine(x0 + "," + y1);
         }
 
         private bool ListCheck(List<Position> list, Position pos)
