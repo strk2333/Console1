@@ -22,6 +22,12 @@ namespace Lib
             this.y = y;
         }
 
+        public V2(V2<T, V> v)
+        {
+            x = v.x;
+            y = v.y;
+        }
+
         public static V2<T, V> operator /(V2<T, V> n1, V2<T, V> n2)
         {
             V2<int, int> o1 = (V2<int, int>)Convert.ChangeType(n1, typeof(V2<int, int>));
@@ -36,8 +42,8 @@ namespace Lib
         {
             int x = (int)Convert.ChangeType(n1.x, typeof(int));
             int y = (int)Convert.ChangeType(n1.y, typeof(int));
-            x /= n2;
-            y /= n2;
+            x = (int)Math.Ceiling((float)x / n2);
+            y = (int)Math.Ceiling((float)y / n2);
             T x1 = (T)Convert.ChangeType(n1.x, typeof(T));
             V y1 = (V)Convert.ChangeType(n1.y, typeof(V));
 

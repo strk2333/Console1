@@ -44,12 +44,17 @@ namespace SimCity.Fund
             _point = point;
         }
 
-        public bool remove(Position pos)
+        public List<Position> GetNeighbors()
+        {
+            return _neighbors;
+        }
+
+        public bool RemoveNeighbor(Position pos)
         {
             return _neighbors.Remove(pos);
         }
 
-        public void add(Position pos)
+        public void AddNeighbor(Position pos)
         {
             if (pos != null)
                 _neighbors.Add(pos);

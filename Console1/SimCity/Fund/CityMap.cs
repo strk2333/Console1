@@ -29,49 +29,138 @@ namespace SimCity.Fund
 
         private void Init()
         {
-            _floorArea = new V2<float, float>(20, 20);
-            _transMap = new TransMap(1, 10, new V2<int, int>(), _floorArea);
-            ConsolePrintMap(_transMap.GetPos());
+            _floorArea = new V2<float, float>(10, 5);
+            _transMap = new TransMap(1, 3, new V2<int, int>(), _floorArea);
+            _pos = _transMap.GetPos();
+            DefaultNamePos();
+            SetFixedNeighbors(_floorArea);
+            ConsolePrintMap(_pos);
+            ConsolePrintNeibors();
+        }
+
+        private void DefaultNamePos()
+        {
+            for (int i = 0; i < _pos.Length; i++)
+                _pos[i].SetName(((char)('A' + i % 26)).ToString() + i / 26);
+        }
+
+        private void SetFixedNeighbors(V2<float, float> floorArea)
+        {
+            V2<float, float> area = new V2<float, float>(floorArea);
+            area /= 2;
+            V2<int, int> tmpV2 = new V2<int, int>();
+            Position tmpPos;
+            foreach (Position pos in _pos)
+            {
+                // ← ↑ → ↓
+                tmpV2.x = pos.GetPoint().x - 1;
+                tmpV2.y = pos.GetPoint().y;
+                if (pos.GetPoint().x - 1 > -area.x && (tmpPos = _transMap.ListContain(tmpV2)) != null)
+                {
+                    pos.AddNeighbor(tmpPos);
+                }
+                tmpV2.x = pos.GetPoint().x;
+                tmpV2.y = pos.GetPoint().y + 1;
+                if (pos.GetPoint().y + 1 < area.y && (tmpPos = _transMap.ListContain(tmpV2)) != null)
+                {
+                    pos.AddNeighbor(tmpPos);
+                }
+                tmpV2.x = pos.GetPoint().x + 1;
+                tmpV2.y = pos.GetPoint().y;
+                if (pos.GetPoint().x + 1 < area.x && (tmpPos = _transMap.ListContain(tmpV2)) != null)
+                {
+                    pos.AddNeighbor(tmpPos);
+                }
+                tmpV2.x = pos.GetPoint().x;
+                tmpV2.y = pos.GetPoint().y - 1;
+                if (pos.GetPoint().y - 1 > -area.y && (tmpPos = _transMap.ListContain(tmpV2)) != null)
+                {
+                    pos.AddNeighbor(tmpPos);
+                }
+
+                // ↖ ↗ ↘ ↙
+                tmpV2.x = pos.GetPoint().x - 1;
+                tmpV2.y = pos.GetPoint().y + 1;
+                if (pos.GetPoint().x - 1 > -area.x && pos.GetPoint().y + 1 < area.y && (tmpPos = _transMap.ListContain(tmpV2)) != null)
+                {
+                    pos.AddNeighbor(tmpPos);
+                }
+                tmpV2.x = pos.GetPoint().x + 1;
+                tmpV2.y = pos.GetPoint().y + 1;
+                if (pos.GetPoint().y + 1 < area.y && pos.GetPoint().x + 1 < area.x && (tmpPos = _transMap.ListContain(tmpV2)) != null)
+                {
+                    pos.AddNeighbor(tmpPos);
+                }
+                tmpV2.x = pos.GetPoint().x + 1;
+                tmpV2.y = pos.GetPoint().y - 1;
+                if (pos.GetPoint().x + 1 < area.x && pos.GetPoint().y - 1 > -area.y && (tmpPos = _transMap.ListContain(tmpV2)) != null)
+                {
+                    pos.AddNeighbor(tmpPos);
+                }
+                tmpV2.x = pos.GetPoint().x - 1;
+                tmpV2.y = pos.GetPoint().y - 1;
+                if (pos.GetPoint().y - 1 > -area.y && pos.GetPoint().y - 1 > -area.y && (tmpPos = _transMap.ListContain(tmpV2)) != null)
+                {
+                    pos.AddNeighbor(tmpPos);
+                }
+            }
         }
 
         private void ConsolePrintMap(Position[] pos)
         {
-            List<V2<int, int>> points = new List<V2<int, int>>();
-            foreach (Position p in pos)
-            {
-                points.Add(p.GetPoint());
-            }
+            int count = 0;
+            List<Position> points = new List<Position>(pos);
+
+            Position p;
+            // (-_floorArea.x, _floorArea.y)
             for (int y = (int)_floorArea.y; y > -_floorArea.y; y--)
             {
                 for (int x = -(int)_floorArea.x; x < _floorArea.x; x++)
                 {
-                    if (points.Find(item => item.x == y && item.y == x) != null)
+                    if ((p = points.Find(item => item.GetPoint().x == x && item.GetPoint().y == y)) != null)
                     {
-                        if (y == 0 && y == x)
+                        if (y == 0 && x == 0)
                         {
-                            Console.Write("θ");
+                            Console.Write(p.GetName() + " ");
                         }
                         else
-                            Console.Write("C ");
+                            Console.Write(p.GetName() + " ");
+
+                        count++;
                     }
                     else
                     {
-                        if (y == 0 && y == x)
+                        if (y == 0 && x == 0)
                         {
-                            Console.Write("O");
+                            Console.Write("OO ");
                         }
                         else
-                            Console.Write(". ");
+                            Console.Write("[] ");
                     }
                 }
+                Console.WriteLine();
+            }
+            Console.WriteLine(count);
+        }
+
+        public void ConsolePrintNeibors()
+        {
+            foreach (Position pos in _pos)
+            {
+                Console.Write(pos.GetName() + ":");
+                foreach (Position nei in pos.GetNeighbors())
+                    Console.Write(nei.GetName() + " ");
                 Console.WriteLine();
             }
         }
     }
 
+
+
     class TransMap
     {
         private Position[] _pos;
+        private List<Position> _posList;
         private Random random = new Random(Guid.NewGuid().GetHashCode());
         public TransMap() { }
 
@@ -115,9 +204,7 @@ namespace SimCity.Fund
                             factor = random.Next(0, 100) / (float)100;
                             factorx = random.Next(-1000, 1000) / (float)1000;
                             factory = random.Next(-1000, 1000) / (float)1000;
-                            SetPointByRadius(pos, factor, factorx, factory, refPoint, area / 2);
-                            Debug.WriteLine("-" + pos.GetPoint());
-                        } while (ListCheck(list, pos));
+                        } while (!SetPointByRadius(list, pos, factor, factorx, factory, refPoint, area / 2));
                     }
                     break;
                 case 2:
@@ -134,48 +221,43 @@ namespace SimCity.Fund
             return transMap;
         }
 
-        private void SetPointByRadius(Position pos, float factor, float factorx, float factory, V2<int, int> refPoint, V2<float, float> area)
+        int count1 = 0;
+        private bool SetPointByRadius(List<Position> posList, Position pos, float factor, float factorx, float factory, V2<int, int> refPoint, V2<float, float> area)
         {
             int x0, y0;
 
-            if (factor < 0.1f)
-            {
+            if (factor < 0.2f)
                 // center area
-                GetRandomPoint(0.0f, 0.2f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
-            }
-            else if (factor < 0.3f)
-            {
-                GetRandomPoint(0.2f, 0.4f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
-            }
+                GetRoundRandomPoint(0.0f, 0.2f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
+            else if (factor < 0.4f)
+                GetRoundRandomPoint(0.2f, 0.4f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
             else if (factor < 0.6f)
-            {
-                GetRandomPoint(0.4f, 0.6f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
-            }
+                GetRoundRandomPoint(0.4f, 0.6f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
             else if (factor < 0.8f)
+                GetRoundRandomPoint(0.6f, 0.8f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
+            else
+                // edge area
+                GetRoundRandomPoint(0.8f, 1f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
+
+            if (x0 >= area.x || x0 < 0 || y0 >= area.y || y0 < 0)
+                return false;
+
+            V2<int, int> result = new V2<int, int>();
+            result.x = factorx >= 0 ? refPoint.x + x0 : refPoint.x - x0;
+            result.y = factory >= 0 ? refPoint.y + y0 : refPoint.y - y0;
+
+            if (ListContain(result) == null)
             {
-                GetRandomPoint(0.6f, 0.8f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
+                pos.SetPoint(result);
+                //Console.WriteLine(++count1 + " " + x0 + ", " + y0);
+                //Console.WriteLine(++count1 + " " + result);
+                return true;
             }
             else
-            {
-                // edge area
-                GetRandomPoint(0.8f, 1f, Math.Abs(factorx), Math.Abs(factory), area, out x0, out y0);
-            }
-            if (factorx >= 0 && factory >= 0)
-                pos.SetPoint(new V2<int, int>(refPoint.x + x0, refPoint.y + y0));
-            else if (factorx >= 0 && factory <= 0)
-                pos.SetPoint(new V2<int, int>(refPoint.x + x0, refPoint.y - y0));
-            else if (factorx <= 0 && factory >= 0)
-                pos.SetPoint(new V2<int, int>(refPoint.x - x0, refPoint.y + y0));
-            else if (factorx <= 0 && factory <= 0)
-                pos.SetPoint(new V2<int, int>(refPoint.x - x0, refPoint.y - y0));
-
-            //pos.SetPoint(new V2<int, int>(refPoint.x + x0, refPoint.y + y0));
-
+                return false;
         }
 
-
-
-        private void GetRandomPoint(float factorr1, float factorr2, float factorx, float factory, V2<float, float> area, out int x0, out int y0)
+        private void GetRoundRandomPoint(float factorr1, float factorr2, float factorx, float factory, V2<float, float> area, out int x0, out int y0)
         {
             float r1 = area.x > area.y ? area.x * factorr1 : area.y * factorr1;
             float r2 = area.x > area.y ? area.x * factorr2 : area.y * factorr2;
@@ -184,13 +266,12 @@ namespace SimCity.Fund
             int y1 = r1 * r1 <= x0 * x0 ? 0 : (int)Math.Sqrt(r1 * r1 - x0 * x0);
             int y2 = (int)Math.Sqrt(r2 * r2 - x0 * x0);
             y0 = (int)(y1 + (y2 - y1) * factory);
-            Debug.WriteLine(r1 + "," + r2);
-            Debug.WriteLine(x0 + "," + y1);
         }
 
-        private bool ListCheck(List<Position> list, Position pos)
+        // return true if there is no such pos in _posList
+        public Position ListContain(V2<int, int> pos)
         {
-            return list.Find(item => item.GetPoint().x == pos.GetPoint().x && item.GetPoint().y == pos.GetPoint().y) == null;
+            return _posList.Find(item => item.GetPoint().x == pos.x && item.GetPoint().y == pos.y);
         }
 
         private void InitPos(int size)
@@ -200,6 +281,7 @@ namespace SimCity.Fund
             {
                 _pos[i] = new Position();
             }
+            _posList = new List<Position>(_pos);
         }
 
         public Position[] GetPos()
