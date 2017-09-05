@@ -13,11 +13,13 @@ My silly stuff
 
   Sim a baset game
 
+- Sim city transport (uncomplete)
+
 ## Future
 - Poem
 
   auto generate a poem:>
   
-- Sim city transport
+- Sim city
 
   +;-
