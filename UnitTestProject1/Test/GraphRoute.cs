@@ -14,8 +14,8 @@ public class GraphRoute
     [Fact]
     public void RouteTest()
     {
-        FindRoute(3, 5);
-        //FindAllNodes();
+        //FindRoute(3, 5);
+        FindAllNodes();
     }
 
     private void InitNodes()
@@ -151,7 +151,7 @@ public class GraphRoute
             foreach (GraphNode node in qNode.neighbors)
             {
                 if (visited.Contains(node))
-                    return;
+                    continue;
                 q.Enqueue(node);
                 visited.Add(node);
             }

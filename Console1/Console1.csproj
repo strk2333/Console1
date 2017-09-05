@@ -66,6 +66,7 @@
     <Compile Include="SimCity\Creature\Talents.cs" />
     <Compile Include="SimCity\BasketGame%28obsolete%29\Data\Enums.cs" />
     <Compile Include="SimCity\BasketGame%28obsolete%29\Data\StaticData.cs" />
+    <Compile Include="SimCity\Fund\Route.cs" />
     <Compile Include="SimCity\Starter.cs" />
   </ItemGroup>
   <ItemGroup>

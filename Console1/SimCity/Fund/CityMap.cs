@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Lib;
-using System.Diagnostics;
+using SimCity.Fund;
 
 namespace SimCity.Fund
 {
     public class CityMap
     {
         private static CityMap _instance;
+        private static Route _route;
         private V2<float, float> _floorArea;
         private TransMap _transMap;
         private Position[] _pos;
+        private List<Position> posList;
 
         private CityMap()
         {
@@ -29,12 +30,15 @@ namespace SimCity.Fund
 
         private void Init()
         {
-            _floorArea = new V2<float, float>(10, 5);
-            _transMap = new TransMap(1, 3, new V2<int, int>(), _floorArea);
+            _floorArea = new V2<float, float>(10, 10);
+            _route = new Route();
+            _transMap = new TransMap(1, 10, new V2<int, int>(), _floorArea);
             _pos = _transMap.GetPos();
+            posList = new List<Position>(_pos);
             DefaultNamePos();
             SetFixedNeighbors(_floorArea);
             ConsolePrintMap(_pos);
+            _route.FindRoute("A0", "B0", posList);
             ConsolePrintNeibors();
         }
 
