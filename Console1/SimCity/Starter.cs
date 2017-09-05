@@ -21,7 +21,7 @@ namespace SimCity
             Init();
         }
 
-        #region obsoleted
+        #region basket
         private void StartBasketGame()
         {
             basketGame = new BasketController();

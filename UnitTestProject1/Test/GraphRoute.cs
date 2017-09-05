@@ -11,7 +11,7 @@ public class GraphRoute
 {
     List<GraphNode> nodes;
 
-    [Fact]
+    
     public void RouteTest()
     {
         //FindRoute(3, 5);

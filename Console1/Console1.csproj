@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Kits\Cralwer.cs" />
     <Compile Include="Kits\TieBaUser.cs" />
+    <Compile Include="Poem\PoemData.cs" />
     <Compile Include="SimCity\Fund\CityMap.cs" />
     <Compile Include="SimCity\Fund\Data.cs" />
     <Compile Include="SimCity\Fund\Position.cs" />
@@ -74,6 +75,9 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Net\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
