@@ -18,8 +18,11 @@ namespace Console1
             //Kits.Cralwer c = new Kits.Cralwer();
             //c.Start();
 
-            SimCity.Starter starter = new SimCity.Starter();
-            starter.StartGame();
+            //SimCity.Starter starter = new SimCity.Starter();
+            //starter.StartGame();
+
+            NetExample ne = new NetExample();
+            ne.NetEx();
 
             Console.Read();
         }
