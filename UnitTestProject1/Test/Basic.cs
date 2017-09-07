@@ -17,49 +17,66 @@ namespace UnitTestProject1.Test
         {
             //int i = 1 << 32 - 1;
             string result;
-            if ((result = BigPlus("123", "45")) != null)
+            if ((result = BigPlus("1e12", "1e12")) != null)
                 Debug.WriteLine(result);
         }
 
         private string BigPlus(string n1, string n2)
         {
-            int maxLen = Math.Max(n1.Length, n2.Length);
-            int minLen = Math.Min(n1.Length, n2.Length);
-            int[] crr = new int[maxLen + 1];
+            string stemp;
+            stemp = n1.Length > n2.Length ? n1 : n2;
+            n2 = n1.Length > n2.Length ? n2 : n1;
+            n1 = stemp;
+            int[] crr = new int[n1.Length + 1];
             StringBuilder result = new StringBuilder();
 
-            if (!CheckNum(n1) && !CheckNum(n2))
+            if (!CheckNum(n1) || !CheckNum(n2))
+            {
+                Debug.WriteLine("Error: Input is invalid.");
                 return null;
+            }
 
-            for (int i = 1; i < minLen + 1; i++)
+            if (n1.Contains('.'))
+            {
+
+            }
+
+            // both part
+            for (int i = 1; i < n2.Length + 1; i++)
             {
                 int num1 = n1[n1.Length - i] - '0';
                 int num2 = n2[n2.Length - i] - '0';
-                if (num1 + num2 + crr[i - 1] > 10)
+                if (num1 + num2 + crr[i - 1] > 9)
                 {
                     crr[i] = 1;
-                    result.Append((num1 + num2 + crr[i]) % 10);
+                    result.Append((num1 + num2 + crr[i - 1]) % 10);
                 }
                 else
                 {
-                    result.Append(num1 + num2 + crr[i]);
+                    result.Append(num1 + num2 + crr[i - 1]);
                 }
             }
-
-            for (int i = maxLen - minLen; i > 0; i--)
+            
+            // left part
+            for (int i = 0; i < n1.Length - n2.Length; i++)
             {
-                int num1 = n1[i - 1] - '0';
-                if (num1 + crr[i - 1] > 10)
+                int num1 = n1[n1.Length - n2.Length - i - 1] - '0';
+                if (num1 + crr[i + n2.Length] > 9)
                 {
-                    crr[i] = 1;
-                    result.Append((num1 + crr[i - 1]) % 10);
+                    crr[i + n2.Length + 1] = 1;
+                    result.Append((num1 + crr[i + n2.Length]) % 10);
                 }
-                else
+                else if (num1 + crr[i + n2.Length] > 0)
                 {
-                    result.Append(num1 + crr[i - 1]);
+                    result.Append(num1 + crr[i + n2.Length]);
                 }
             }
 
+            // highest bit
+            if (crr[n1.Length] == 1)
+                result.Append(1);
+
+            // reverse string
             char[] tmp = new char[result.Length];
             for (int i = 0; i < result.Length; i++)
             {
@@ -72,12 +89,47 @@ namespace UnitTestProject1.Test
         // return true if n can be converted to number.
         private bool CheckNum(string n)
         {
+            if (n.Split('.').Length > 2)
+                return false;
+
             for (int i = 0; i < n.Length; i++)
             {
                 if (n[i] < '0' || n[i] > '9')
                     return false;
             }
             return true;
+        }
+
+        // Scientific Notation 
+        private string TryConvertFromSN(string s)
+        {
+            if (!s.Contains('e') && !s.Contains('E'))
+                return null;
+
+            string result = "";
+            string[] p1;
+            string[] p2;
+
+            p1 = s.Split('E');
+            p1 = s.Split('e');
+            if (p1.Length != 2)
+                return null;
+
+            p2 = p1[0].Split('.');
+            if (p2.Length > 2)
+                return null;
+
+            for (int i = 0; i < p2[0].Length; i++)
+            {
+                result += p2[0][i];
+            }
+
+            if (p2.Length == 2)
+            {
+
+            }
+
+            return result;
         }
     }
 }

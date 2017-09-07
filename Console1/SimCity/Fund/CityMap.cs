@@ -30,9 +30,9 @@ namespace SimCity.Fund
 
         private void Init()
         {
-            _floorArea = new V2<float, float>(10, 10);
+            _floorArea = new V2<float, float>(15, 15);
             _route = new Route();
-            _transMap = new TransMap(1, 10, new V2<int, int>(), _floorArea);
+            _transMap = new TransMap(2, 20, new V2<int, int>(), _floorArea);
             _pos = _transMap.GetPos();
             posList = new List<Position>(_pos);
             DefaultNamePos();
@@ -179,9 +179,9 @@ namespace SimCity.Fund
         /// <param name="type">
         /// 1: one-core radiation
         /// 2: multi-core radiation
-        /// 3: region
+        /// 3: circle
         /// 4: banding
-        /// 5: circle
+        /// 5: region (cores can use different types)
         /// </param>
         /// <param name="size">
         /// Transport point amount level. range: [1-20]. 
@@ -189,7 +189,7 @@ namespace SimCity.Fund
         /// <param name="refPoint">
         /// Reference point for reference(NOT MUST the center point, BUT USUALLY).
         /// <para>
-        /// Notice: refPoint is a coordiation, Not a real Position in the city.
+        /// Notice: refPoint is a coordiation, Not a real object Position in the city.
         /// </para>
         /// </param>
         public TransMap GenRandomTransMap(int type, int size, V2<int, int> refPoint, V2<float, float> area)
@@ -212,6 +212,23 @@ namespace SimCity.Fund
                     }
                     break;
                 case 2:
+                    int cores = 2;
+
+                    for (int i = 0; i < cores; i++)
+                    {
+                        float factorRef = random.Next(-1000, 1000) / (float)1000;
+                        V2<int, int> tmpRef = new V2<int, int>((int) (area.x * factorRef), (int)(area.y * factorRef));
+                        for (int j = i * _pos.Length / cores; j < (i + 1) * _pos.Length / cores; j++)
+                        {
+                            do
+                            {
+                                factor = random.Next(0, 100) / (float)100;
+                                factorx = random.Next(-1000, 1000) / (float)1000;
+                                factory = random.Next(-1000, 1000) / (float)1000;
+                            } while (!SetPointByRadius(list, _pos[j], factor, factorx, factory, tmpRef, area / 2 / 5));
+                        }
+                    }
+                    
                     break;
                 case 3:
                     break;
