@@ -20,7 +20,7 @@ namespace Kits
 
         public int CompareTo(object obj)
         {
-            return ~postCount.CompareTo((obj as TieBaUser).postCount);
+            return -postCount.CompareTo((obj as TieBaUser).postCount);
         }
     }
 }

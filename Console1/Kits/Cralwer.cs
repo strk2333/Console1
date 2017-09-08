@@ -20,6 +20,7 @@ namespace Kits
         private List<TieBaUser> users;
         private int passCount = 0;
         private string finalPage;
+        private List<Thread> threadPool;
         //private List<string> files;
 
         public Cralwer(string root)
@@ -28,6 +29,7 @@ namespace Kits
             nameDatabase2 = new List<string[]>();
             postUrls = new Stack<string>();
             users = new List<TieBaUser>();
+            threadPool = new List<Thread>();
             //tmpCookie = new CookieContainer();
             //tmpCookie.SetCookies(new Uri(_root), "BDUSS=p2WU5FS3ZKRnZTc3FFajlwYVo3MmV0OUt0eVpmU1NMU2FYaFRjd1pqaWt0cHBaTVFBQUFBJCQAAAAAAAAAAAEAAAA718I2SVdOc3VyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKQpc1mkKXNZQU; BAIDUID=FECF9A4ED9BAF4D73006337F31483E88:FG=1; PSTM=1498011163; BIDUPSID=FECF9A4ED9BAF4D73006337F31483E88; MCITY=-%3A; PSINO=3; H_PS_PSSID=1461_21092_18560_17001; BDSFRCVID=TIAsJeC62ReD6hcZtZPxhdrQ9g5Yr4bTH6ao6KCu7MiNxMSLFblaEG0PqU8g0KubaaNdogKKL2OTHmoP;");
 
@@ -39,27 +41,29 @@ namespace Kits
 
         public void Start()
         {
-            finalPage = CrawlFinalPage(_root);
-            HandlePagesPostCrawl();
+            //finalPage = CrawlFinalPage(_root);
+            //HandlePagesPostCrawl(30);
 
             //foreach (string s in CrawlRemarkData(@"https://tieba.baidu.com/p/5279372068"))
             //{
             //    Console.WriteLine(s);
             //}
 
-            //GetPostUrls(_root);
-            //postUrls.Push(_root);
-            //HandlePagesRemarkCrawl();
+            GetPostUrls(_root);
+            foreach (string url in postUrls)
+                Console.WriteLine(url);
+            HandlePagesRemarkCrawl();
         }
 
         private void DataHandles()
         {
-            Print(nameDatabase1, @"C:\Users\1\Documents\TieBaData.txt");
+            Print(nameDatabase1, @"C:\Users\1\Documents\PostData.txt");
             //ShowDatabaseCMD();
             PackData(nameDatabase1);
             users.Sort();
-            Print(users, @"C:\Users\1\Documents\TieBaUsersPostData.txt");
+            Print(users, @"C:\Users\1\Documents\PostRank.txt");
             //ShowUsersCMD();
+            Console.WriteLine(threadPool.Count);
         }
 
         #region Crawl
@@ -95,7 +99,8 @@ namespace Kits
             for (int i = 0; i < threadCount; i++)
             {
                 int j = i;
-                CreateCrawlThread(j).Start();
+                threadPool.Add(CreateCrawlThread(j + 1));
+                threadPool[i].Start();
             }
         }
 
@@ -114,7 +119,8 @@ namespace Kits
             for (int i = 0; i < threadCount; i++)
             {
                 int j = i;
-                CreateCrawlThread(j).Start();
+                threadPool.Add(CreateCrawlThread(j + 1));
+                threadPool[i].Start();
             }
         }
 
@@ -163,19 +169,18 @@ namespace Kits
 
                     lock (sync)
                     {
-                        Console.WriteLine("Done");
+                        Console.WriteLine(j + "Done");
                         if (--num == 0)
                         {
                             Console.WriteLine("All Remark Done");
 
                             PackData(nameDatabase2);
-                            Print(nameDatabase2, @"C:\Users\1\Documents\TieBaUsersRemarkData.txt");
+                            Print(nameDatabase2, @"C:\Users\1\Documents\RemarkData.txt");
                             Console.WriteLine("UserData Remark Done");
                         }
                     }
                 });
             }
-
             foreach (Thread t in threads)
                 t.Start();
         }
@@ -186,7 +191,7 @@ namespace Kits
             req.Method = "GET";
             string tmp = GetContent(req.GetResponse().GetResponseStream());
             string[] tmp2 = Analyst(tmp, @"<a href=""/p/[\s\S]+?</a>");
-            string[] tmp3 = GetHouser(tmp2);
+            string[] tmp3 = GetPostUrl(tmp2);
             Thread.Sleep(1000);
             foreach (string s in tmp3)
             {
@@ -233,7 +238,8 @@ namespace Kits
                     }
                     Thread.Sleep(500);
                     Console.WriteLine("Try again");
-                    CreateCrawlThread(0).Start();
+                    //CreateCrawlThread(0).Start();
+                    RunFromPool();
                     Thread.CurrentThread.Abort();
                 }
             }
@@ -247,13 +253,14 @@ namespace Kits
             return tmp3;
         }
 
+
         private static string[] CrawlRemarkData(string url)
         {
-            // <div class="l_post l_post_bright j_l_post clearfix  " 
+            // <a data-field="{&quot;un&quot;:&quot;\u66f9\u683c\u9a7e\u5230life&quot;}" alog-group="p_author" class="p_author_name j_user_card" href="/home/main?un=%E6%9B%B9%E6%A0%BC%E9%A9%BE%E5%88%B0life&amp;ie=utf-8&amp;fr=pb" target="_blank">曹格驾到life</a>
             HttpWebRequest req = WebRequest.Create(url) as HttpWebRequest;
             req.Method = "GET";
             string tmp = GetContent(req.GetResponse().GetResponseStream());
-            string[] tmp2 = Analyst(tmp, @"<a data-field=[\s\S]+?</a>");
+            string[] tmp2 = Analyst(tmp, @"<a data-field=""{""&quot;un[\s\S]+?</a>");
             string[] tmp3 = GetRemarker(tmp2);
             Thread.Sleep(200);
 
@@ -300,6 +307,21 @@ namespace Kits
             return tmp;
         }
 
+        private string[] GetPostUrl(string[] source)
+        {
+            // <a href="/p/5312451216" title="出一个红蓝手柄。带一个非原装的" target="_blank" class="j_th_tit ">出一个红蓝手柄。带一个非原装的</a>
+            string[] dest = new string[source.Length];
+            string tmp;
+            for (int i = 0; i < source.Length; i++)
+            {
+                tmp = Regex.Match(source[i], @"href="".*?""").Value;
+                tmp.Remove(0, @"".Length);
+                tmp.Remove(tmp.Length - 1, 1);
+                dest[i] = _root + tmp;
+            }
+            return dest;
+        }
+
         private static string[] GetRemarker(string[] target)
         {
             // 
@@ -315,7 +337,6 @@ namespace Kits
                     list.Add(tmp);
                 }
             }
-
             return list.ToArray();
         }
 
@@ -381,6 +402,18 @@ namespace Kits
             foreach (var i in data)
                 users.Add(new TieBaUser(i.Key, i.Value));
         }
+
+        private void RunFromPool()
+        {
+            foreach (Thread t in threadPool)
+            {
+                if (t.ThreadState != ThreadState.Running)
+                {
+                    //t.res;
+                }
+            }
+        }
+
 
         #endregion
 
