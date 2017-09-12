@@ -15,14 +15,14 @@ namespace Console1
             //WordGameController game = new WordGameController();
             //game.StartGame();
 
-            Kits.Cralwer c = new Kits.Cralwer();
-            c.Start();
+            //Kits.Cralwer c = new Kits.Cralwer();
+            //c.Start();
 
             //SimCity.Starter starter = new SimCity.Starter();
             //starter.StartGame();
 
-            //NetExample ne = new NetExample();
-            //ne.NetEx();
+            NetExample ne = new NetExample();
+            ne.ExStart();
 
             Console.Read();
         }

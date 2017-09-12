@@ -15,12 +15,12 @@ public class Net
     [Fact]
     public void NetEx()
     {
-        new Thread(delegate ()
-        {
-            Client c = new Client();
-        }).Start();
-
-        Server s = new Server();
+        Client c;
+        Server s;
+        if (Console.Read() == '1')
+            c = new Client();
+        else
+            s = new Server();
     }
 }
 
@@ -28,13 +28,24 @@ public class Server
 {
     private string _address = "127.0.0.1";
     private int _port = 6000;
+    private Socket sSocket;
     public Server()
+    {
+        Init();
+        Start();
+    }
+
+    public void Init()
     {
         //IPAddress ip = IPAddress.Parse(_address);
         IPAddress ip = Dns.GetHostEntry(Dns.GetHostName()).AddressList[1];
         IPEndPoint ipe = new IPEndPoint(ip, _port);
-        Socket sSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        sSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         sSocket.Bind(ipe);
+    }
+
+    public void Start()
+    {
         sSocket.Listen(0);
         Debug.WriteLine("listening...");
         Socket serverSocket = sSocket.Accept();
@@ -49,7 +60,6 @@ public class Server
         }
 
         serverSocket.Send(Encoding.UTF8.GetBytes("" + serverSocket.RemoteEndPoint));
-        
     }
 
 }
@@ -58,15 +68,27 @@ public class Client
 {
     private string _address = "127.0.0.1";
     private int _port = 6000;
+    private Socket clientSocket;
+    private IPEndPoint ipe;
 
     public Client()
     {
+        Init();
+        Start();
+    }
+
+    public void Init()
+    {
         //IPAddress ip = IPAddress.Parse(_address);
         IPAddress ip = Dns.GetHostEntry(Dns.GetHostName()).AddressList[1];
-        IPEndPoint ipe = new IPEndPoint(ip, _port);
+        ipe = new IPEndPoint(ip, _port);
         IPEndPoint localIpe = new IPEndPoint(ip, _port + 1);
-        Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         clientSocket.Bind(localIpe);
+    }
+
+    public void Start()
+    {
         clientSocket.Connect(ipe);
 
         string msg = "你好";
