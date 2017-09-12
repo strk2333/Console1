@@ -91,6 +91,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Holo\Compiler.cs" />
     <Compile Include="Kits\Cralwer.cs" />
     <Compile Include="Kits\TieBaUser.cs" />
     <Compile Include="Net\NetExample.cs" />
@@ -137,6 +138,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

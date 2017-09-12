@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Console1.WordGame;
+using Holo;
 
 namespace Console1
 {
@@ -21,10 +21,13 @@ namespace Console1
             //SimCity.Starter starter = new SimCity.Starter();
             //starter.StartGame();
 
-            NetExample ne = new NetExample();
-            ne.ExStart();
+            //NetExample ne = new NetExample();
+            //ne.ExStart();
 
-            Console.Read();
+            Compiler c = new Compiler();
+            c.Start();
+
+            Console.ReadKey();
         }
     }
 
