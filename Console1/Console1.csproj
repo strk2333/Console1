@@ -27,6 +27,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -65,6 +67,14 @@
       <HintPath>..\packages\IronPython.2.7.7\lib\Net45\IronPython.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Markdown, Version=2.0.0.0, Culture=neutral, PublicKeyToken=1b320cc08ad5aa89, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdown.2.2.1\lib\net451\Markdown.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="MdCompile, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MdCompile.1.0.2\lib\net45\MdCompile.exe</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Dynamic, Version=1.1.2.22, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicLanguageRuntime.1.1.2\lib\Net45\Microsoft.Dynamic.dll</HintPath>
       <Private>True</Private>
@@ -92,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Holo\Compiler.cs" />
+    <Compile Include="Holo\Element.cs" />
     <Compile Include="Kits\Cralwer.cs" />
     <Compile Include="Kits\TieBaUser.cs" />
     <Compile Include="Net\NetExample.cs" />
@@ -121,6 +132,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Holo\ReadMe.md" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +152,13 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\MdCompile.1.0.2\build\MdCompile.targets" Condition="Exists('..\packages\MdCompile.1.0.2\build\MdCompile.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\MdCompile.1.0.2\build\MdCompile.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MdCompile.1.0.2\build\MdCompile.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
