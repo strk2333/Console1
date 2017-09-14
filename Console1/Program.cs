@@ -21,11 +21,11 @@ namespace Console1
             //SimCity.Starter starter = new SimCity.Starter();
             //starter.StartGame();
 
-            //NetExample ne = new NetExample();
-            //ne.ExStart();
+            NetExample ne = new NetExample();
+            ne.ExStart();
 
-            Compiler c = new Compiler();
-            c.Start();
+            //Compiler c = new Compiler();
+            //c.Start();
 
             Console.ReadKey();
         }

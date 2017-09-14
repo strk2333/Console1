@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Diagnostics;
+using System.Windows.Input;
+using System.IO;
 
 public class NetExample
 {
@@ -23,7 +24,7 @@ public class NetExample
 public class Server
 {
     private string _address = "127.0.0.1";
-    private int _port = 6000;
+    private int _port = 8568;
     private Socket sSocket;
     private Socket serverSocket;
     public Server()
@@ -85,21 +86,57 @@ public class Server
                 byte[] buf = new byte[1024];
                 int len = 0;
 
-                while ((tmp = Console.Read()) != '\r' && len != buf.Length - 1)
+                while ((tmp = Console.Read()) != '\r' && tmp != '\n' && len != buf.Length - 1)
                 {
                     buf[len] = (byte)tmp;
                     len++;
                 }
+
+                string[] splits = mTrim(Encoding.UTF8.GetString(buf)).Split(' ');
+                if (splits.Length == 2 && splits[0].ToLower() == "sendfile")
+                {
+                    // send file
+                    try
+                    {
+                        serverSocket.Send(Encoding.UTF8.GetBytes("__COMMAND:sendfile".ToCharArray()));
+                        Thread.Sleep(100);
+                        serverSocket.SendFile(splits[1]);
+                        Thread.Sleep(100);
+                        serverSocket.Send(Encoding.UTF8.GetBytes("__EOF".ToCharArray()));
+                    }
+                    catch (FileNotFoundException e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    continue;
+                }
                 serverSocket.Send(buf, len, SocketFlags.None);
             }
         }).Start();
+    }
+
+    private string mTrim(string s)
+    {
+        int index = -1;
+        for (int i = s.Length - 1; i > 0; i--)
+        {
+            if (s[i] == 0)
+                index = i;
+            else
+                break;
+        }
+
+        if (index != -1)
+            return s.Substring(0, index);
+        else
+            return "";
     }
 }
 
 public class Client
 {
     private string _address = "127.0.0.1";
-    private int _port = 6000;
+    private int _port = 8568;
     private Socket clientSocket;
     private IPEndPoint ipe;
 
@@ -131,7 +168,7 @@ public class Client
             }
             catch (SocketException se)
             {
-                Thread.Sleep(100);
+                Thread.Sleep(1000);
                 Console.WriteLine("Try to reconnect");
             }
             if (clientSocket.Connected)
@@ -148,14 +185,46 @@ public class Client
     {
         new Thread(delegate ()
         {
+            StringBuilder fileBuf = new StringBuilder();
+            bool readingFile = false;
             while (true)
             {
-                byte[] buf = new byte[20];
+                byte[] buf = new byte[128];
                 try
                 {
                     clientSocket.Receive(buf);
-                    Console.Write(Encoding.UTF8.GetString(buf).Trim());
-                    Console.WriteLine("");
+
+                    if (!readingFile && ResolveCommand(mTrim(Encoding.UTF8.GetString(buf))) == "sendfile")
+                    {
+                        fileBuf.Clear();
+                        readingFile = true;
+                        Console.WriteLine("File download start.");
+                        clientSocket.Receive(buf);
+                    }
+
+                    if (readingFile)
+                    {
+                        string s = mTrim(Encoding.UTF8.GetString(buf));
+                        Console.WriteLine(s.Length);
+
+                        if (s.Length != 0 && s != "__EOF")
+                        {
+                            fileBuf.Append(s);
+                        }
+                        else
+                        {
+                            Console.WriteLine("File download complete.");
+                            readingFile = false;
+                            FileStream f = File.Create("D:/file.txt");
+                            byte[] tmp = Encoding.UTF8.GetBytes(fileBuf.ToString());
+                            f.Write(tmp, 0, tmp.Length);
+                            f.Close();
+                        }
+                    }else
+                    {
+                        Console.Write(Encoding.UTF8.GetString(buf).Trim());
+                        Console.WriteLine("");
+                    }
                 }
                 catch (SocketException se)
                 {
@@ -176,7 +245,7 @@ public class Client
             {
                 byte[] buf = new byte[1024];
                 int len = 0;
-                while ((tmp = Console.Read()) != '\r' && len != buf.Length - 1)
+                while ((tmp = Console.Read()) != '\r' && tmp != '\n' && len != buf.Length - 1)
                 {
                     buf[len] = (byte)tmp;
                     len++;
@@ -191,6 +260,17 @@ public class Client
                 }
             }
         }).Start();
+    }
+
+    private string ResolveCommand(string s)
+    {
+        string[] splits = s.Split(':');
+        if (splits.Length == 2 && splits[0] == "__COMMAND")
+        {
+            return splits[1];
+        }
+
+        return "";
     }
 
     private void ConnCallBack(IAsyncResult ar)
@@ -209,6 +289,23 @@ public class Client
     private void boo()
     {
 
+    }
+
+    private string mTrim(string s)
+    {
+        int index = -1;
+        for (int i = s.Length - 1; i > 0; i--)
+        {
+            if (s[i] == 0)
+                index = i;
+            else
+                break;
+        }
+
+        if (index != -1)
+            return s.Substring(0, index);
+        else
+            return "";
     }
 
 }

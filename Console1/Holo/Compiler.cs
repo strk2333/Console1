@@ -8,7 +8,7 @@ using System.Reflection;
 namespace Holo
 {
     /// <summary>
-    /// HOLO Only Light Opener (Orient Origin Oridinary Odd)
+    /// Holo Language Compiler
     /// </summary>
     public class Compiler
     {
@@ -97,7 +97,6 @@ namespace Holo
                         else
                             Console.WriteLine(part[i] + " can't be registered.\nPlease make sure the item is linked and input the correct name.");
                     }
-
                 }
                 else
                     Console.WriteLine("Commend Error.\nThis function need two params at least.");
