@@ -51,6 +51,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EventHook, Version=1.4.39.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\EventHook.1.4.39\lib\net45\EventHook.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="IronPython, Version=2.7.7.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
       <HintPath>..\packages\IronPython.2.7.7\lib\Net45\IronPython.dll</HintPath>
       <Private>True</Private>
@@ -83,6 +87,18 @@
       <HintPath>..\packages\DynamicLanguageRuntime.1.1.2\lib\Net45\Microsoft.Scripting.Metadata.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Nito.AsyncEx, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Concurrent, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.Concurrent.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Nito.AsyncEx.Enlightenment, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nito.AsyncEx.3.0.1\lib\net45\Nito.AsyncEx.Enlightenment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -96,7 +112,12 @@
     <Compile Include="Holo\Compiler.cs" />
     <Compile Include="Holo\Holo.cs" />
     <Compile Include="Holo\WorkBench.cs" />
+    <Compile Include="Kits\HookTest.cs" />
     <Compile Include="Kits\Cralwer.cs" />
+    <Compile Include="Kits\MouseHook\getLocationForm.cs" />
+    <Compile Include="Kits\MouseHook\HookTest.cs" />
+    <Compile Include="Kits\MouseHook\MouseHook.cs" />
+    <Compile Include="Kits\MouseHook\Win32Api.cs" />
     <Compile Include="Kits\TieBaUser.cs" />
     <Compile Include="Net\NetExample.cs" />
     <Compile Include="Poem\PoemData.cs" />

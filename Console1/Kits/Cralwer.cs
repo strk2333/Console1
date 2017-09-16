@@ -32,7 +32,6 @@ namespace Kits
             threadPool = new List<Thread>();
             //tmpCookie = new CookieContainer();
             //tmpCookie.SetCookies(new Uri(_root), "BDUSS=p2WU5FS3ZKRnZTc3FFajlwYVo3MmV0OUt0eVpmU1NMU2FYaFRjd1pqaWt0cHBaTVFBQUFBJCQAAAAAAAAAAAEAAAA718I2SVdOc3VyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKQpc1mkKXNZQU; BAIDUID=FECF9A4ED9BAF4D73006337F31483E88:FG=1; PSTM=1498011163; BIDUPSID=FECF9A4ED9BAF4D73006337F31483E88; MCITY=-%3A; PSINO=3; H_PS_PSSID=1461_21092_18560_17001; BDSFRCVID=TIAsJeC62ReD6hcZtZPxhdrQ9g5Yr4bTH6ao6KCu7MiNxMSLFblaEG0PqU8g0KubaaNdogKKL2OTHmoP;");
-
             _root = root;
         }
         public Cralwer() : this(string.Format("http://tieba.baidu.com/f?ie=utf-8&kw={0}&fr=search", "Switch"))

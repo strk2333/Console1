@@ -110,7 +110,7 @@ public class Server
                     }
                     continue;
                 }
-                serverSocket.Send(buf, len, SocketFlags.None);
+                serverSocket.Send(mTrim(buf), len, SocketFlags.None);
             }
         }).Start();
     }
@@ -130,6 +130,29 @@ public class Server
             return s.Substring(0, index);
         else
             return "";
+    }
+
+    private byte[] mTrim(byte[] s)
+    {
+        int index = -1;
+        for (int i = s.Length - 1; i > 0; i--)
+        {
+            if (s[i] == 0)
+                index = i;
+            else
+                break;
+        }
+
+        byte[] result;
+        if (index != -1)
+        {
+            result = new byte[index];
+            for (int i = 0; i < index; i++)
+                result[i] = s[i];
+            return result;
+        }
+        else
+            return null;
     }
 }
 
@@ -220,7 +243,8 @@ public class Client
                             f.Write(tmp, 0, tmp.Length);
                             f.Close();
                         }
-                    }else
+                    }
+                    else
                     {
                         Console.Write(Encoding.UTF8.GetString(buf).Trim());
                         Console.WriteLine("");
